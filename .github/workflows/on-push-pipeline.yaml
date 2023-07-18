@@ -1,0 +1,88 @@
+name: on-push-pipeline
+run-name: Pipeline | ${{ github.event.head_commit.message }} | By @${{ github.actor }}
+on:
+  push:
+    branches:
+      - master
+
+env:
+  AWS_REGION: eu-central-1
+  AWS_DEFAULT_REGION: eu-central-1
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_STS_EXTERNAL_KEY: ${{ secrets.AWS_STS_EXTERNAL_KEY }}
+  TERRAFORM_STATE_BUCKET: tamas-gaspar-epam-cloudx-terraform-state
+  TERRAFORM_STATE_FILE: PersonalMetadata.tfstate
+
+jobs:
+  terraform-validate:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+      - name: Initialize Terraform
+        run: |
+          cd terraform
+          terraform init -backend-config="bucket=$TERRAFORM_STATE_BUCKET" -backend-config="key=$TERRAFORM_STATE_FILE" -backend-config="region=$AWS_REGION"
+      - name: Validate Terraform configuration
+        run: terraform validate
+
+  terraform-plan:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+      - name: Initialize Terraform
+        run: |
+          cd terraform
+          terraform init -backend-config="bucket=$TERRAFORM_STATE_BUCKET" -backend-config="key=$TERRAFORM_STATE_FILE" -backend-config="region=$AWS_REGION"
+      - name: Plan actions by Terraform
+        run: |
+          terraform plan -out=app.tfplan \
+            -var aws_region="$AWS_REGION" \
+            -var aws_key_id="$AWS_ACCESS_KEY_ID" \
+            -var aws_secret_key="$AWS_SECRET_ACCESS_KEY" \
+            -var aws_assume_role_external_id="$AWS_STS_EXTERNAL_KEY"
+          cd ..
+      - uses: actions/upload-artifact@v3
+        with:
+          name: terraform-plan-prd
+          path: terraform/app.tfplan
+    needs: terraform-validate
+
+  terraform-apply:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+      - uses: actions/download-artifact@v3
+      - name: Initialize Terraform
+        run: |
+          cd terraform
+          terraform init -backend-config="bucket=$TERRAFORM_STATE_BUCKET" -backend-config="key=$TERRAFORM_STATE_FILE" -backend-config="region=$AWS_REGION"
+      - name: Apply Terraform
+        run: |
+          terraform apply -auto-approve "./../terraform-plan-prd/app.tfplan"
+    needs: terraform-plan
+
+  terraform-destroy:
+    runs-on: ubuntu-latest
+    environment: production-destroy
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+      - name: Initialize Terraform
+        run: |
+          cd terraform
+          terraform init -backend-config="bucket=$TERRAFORM_STATE_BUCKET" -backend-config="key=$TERRAFORM_STATE_FILE" -backend-config="region=$AWS_REGION"
+      - name: Destroy infrastructure with Terraform
+        run: |
+          terraform destroy -auto-approve \
+            -var aws_region="$AWS_REGION" \
+            -var aws_key_id="$AWS_ACCESS_KEY_ID" \
+            -var aws_secret_key="$AWS_SECRET_ACCESS_KEY" \
+            -var aws_assume_role_external_id="$AWS_STS_EXTERNAL_KEY"
+    needs: terraform-plan
