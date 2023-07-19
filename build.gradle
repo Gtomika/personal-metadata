@@ -12,6 +12,7 @@ java {
 }
 
 bootJar {
+	//if changed, also change JAR_NAME variable in tag pipeline
 	archiveFileName = "PersonalMetadata.${archiveExtension.get()}"
 }
 
@@ -26,9 +27,23 @@ repositories {
 }
 
 dependencies {
+	//Spring
 	implementation 'org.springframework.boot:spring-boot-starter'
+
+	// AWS SDK
+	implementation platform('software.amazon.awssdk:bom:2.20.103')
+	implementation 'software.amazon.awssdk:dynamodb'
+	implementation 'software.amazon.awssdk:cognitoidentityprovider'
+	implementation 'software.amazon.awssdk:cognitoidentity'
+
+	// JSON serialization
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7.1'
+
+	//Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	//Tests
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
