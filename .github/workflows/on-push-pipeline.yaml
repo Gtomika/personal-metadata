@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - master
+    paths:
+      - src/**
+      - terraform/**
 
 env:
   AWS_REGION: eu-central-1
