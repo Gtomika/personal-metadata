@@ -22,10 +22,10 @@ jobs:
       - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v2
       - name: Initialize Terraform
-        run: |
-          cd terraform
-          terraform init -backend-config="bucket=$TERRAFORM_STATE_BUCKET" -backend-config="key=$TERRAFORM_STATE_FILE" -backend-config="region=$AWS_REGION"
+        working-directory: ./terraform
+        run: terraform init -backend-config="bucket=$TERRAFORM_STATE_BUCKET" -backend-config="key=$TERRAFORM_STATE_FILE" -backend-config="region=$AWS_REGION"
       - name: Validate Terraform configuration
+        working-directory: ./terraform
         run: terraform validate
 
   terraform-plan:
@@ -35,17 +35,16 @@ jobs:
       - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v2
       - name: Initialize Terraform
-        run: |
-          cd terraform
-          terraform init -backend-config="bucket=$TERRAFORM_STATE_BUCKET" -backend-config="key=$TERRAFORM_STATE_FILE" -backend-config="region=$AWS_REGION"
+        working-directory: ./terraform
+        run: terraform init -backend-config="bucket=$TERRAFORM_STATE_BUCKET" -backend-config="key=$TERRAFORM_STATE_FILE" -backend-config="region=$AWS_REGION"
       - name: Plan actions by Terraform
+        working-directory: ./terraform
         run: |
           terraform plan -out=app.tfplan \
             -var aws_region="$AWS_REGION" \
             -var aws_key_id="$AWS_ACCESS_KEY_ID" \
             -var aws_secret_key="$AWS_SECRET_ACCESS_KEY" \
             -var aws_assume_role_external_id="$AWS_STS_EXTERNAL_KEY"
-          cd ..
       - uses: actions/upload-artifact@v3
         with:
           name: terraform-plan-prd
@@ -60,12 +59,11 @@ jobs:
       - uses: hashicorp/setup-terraform@v2
       - uses: actions/download-artifact@v3
       - name: Initialize Terraform
-        run: |
-          cd terraform
-          terraform init -backend-config="bucket=$TERRAFORM_STATE_BUCKET" -backend-config="key=$TERRAFORM_STATE_FILE" -backend-config="region=$AWS_REGION"
+        working-directory: ./terraform
+        run: terraform init -backend-config="bucket=$TERRAFORM_STATE_BUCKET" -backend-config="key=$TERRAFORM_STATE_FILE" -backend-config="region=$AWS_REGION"
       - name: Apply Terraform
-        run: |
-          terraform apply -auto-approve "./../terraform-plan-prd/app.tfplan"
+        working-directory: ./terraform
+        run: terraform apply -auto-approve "./../terraform-plan-prd/app.tfplan"
     needs: terraform-plan
 
   terraform-destroy:
@@ -75,10 +73,10 @@ jobs:
       - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v2
       - name: Initialize Terraform
-        run: |
-          cd terraform
-          terraform init -backend-config="bucket=$TERRAFORM_STATE_BUCKET" -backend-config="key=$TERRAFORM_STATE_FILE" -backend-config="region=$AWS_REGION"
+        working-directory: ./terraform
+        run: terraform init -backend-config="bucket=$TERRAFORM_STATE_BUCKET" -backend-config="key=$TERRAFORM_STATE_FILE" -backend-config="region=$AWS_REGION"
       - name: Destroy infrastructure with Terraform
+        working-directory: ./terraform
         run: |
           terraform destroy -auto-approve \
             -var aws_region="$AWS_REGION" \
@@ -86,3 +84,35 @@ jobs:
             -var aws_secret_key="$AWS_SECRET_ACCESS_KEY" \
             -var aws_assume_role_external_id="$AWS_STS_EXTERNAL_KEY"
     needs: terraform-plan
+
+  build-release-jar:
+    runs-on: ubuntu-latest
+    environment: create-release
+    steps:
+      - uses: actions/checkout@v3
+      - name: Gradle build fat Spring jar
+        run: ./gradlew :bootJar
+      - uses: actions/upload-artifact@v3
+        name: Upload release jar
+        with:
+          name: release-jar
+          path: build/libs/PersonalMetadata.jar
+    needs: terraform-apply
+
+  create-release:
+    runs_on: ubuntu-latest
+    environment: create-release
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3 # downloads to working directory
+        name: Download release jar
+        with:
+          name: release-jar
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        name: Create GitHub release
+        with:
+          title: Automatic release from GitHub Actions
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: PersonalMetadata.jar
+    needs: build-release-jar

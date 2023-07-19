@@ -5,10 +5,14 @@ plugins {
 }
 
 group = 'com.gaspar'
-version = '0.0.1-SNAPSHOT'
+version = '0.1'
 
 java {
 	sourceCompatibility = '17'
+}
+
+bootJar {
+	archiveFileName = "PersonalMetadata.${archiveExtension.get()}"
 }
 
 configurations {
