@@ -100,7 +100,7 @@ jobs:
     needs: terraform-apply
 
   create-release:
-    runs_on: ubuntu-latest
+    runs-on: ubuntu-latest
     environment: create-release
     steps:
       - uses: actions/checkout@v3
