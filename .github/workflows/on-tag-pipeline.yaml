@@ -1,0 +1,41 @@
+name: on-tag-pipeline
+run-name: Tag | ${{ github.ref_name }}
+on:
+  push:
+    tags:
+      - '*'
+
+env:
+  JAR_NAME: PersonalMetadata.jar # must match the name in build.gradle
+
+jobs:
+  build-release-jar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      - name: Gradle build fat Spring jar
+        run: ./gradlew :bootJar
+      - uses: actions/upload-artifact@v3
+        name: Upload release jar
+        with:
+          name: release-jar
+          path: "build/libs/${{ env.JAR_NAME }}"
+
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3 # downloads to working directory
+        name: Download release jar
+        with:
+          name: release-jar
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        name: Create GitHub release
+        with:
+          title: "Automatic release | ${{ github.ref_name }}"
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: "${{ env.JAR_NAME }}"
+    needs: build-release-jar

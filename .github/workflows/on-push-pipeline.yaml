@@ -1,5 +1,5 @@
 name: on-push-pipeline
-run-name: Pipeline | ${{ github.event.head_commit.message }} | By @${{ github.actor }}
+run-name: Push | ${{ github.event.head_commit.message }}
 on:
   push:
     branches:
@@ -84,35 +84,3 @@ jobs:
             -var aws_secret_key="$AWS_SECRET_ACCESS_KEY" \
             -var aws_assume_role_external_id="$AWS_STS_EXTERNAL_KEY"
     needs: terraform-plan
-
-  build-release-jar:
-    runs-on: ubuntu-latest
-    environment: create-release
-    steps:
-      - uses: actions/checkout@v3
-      - name: Gradle build fat Spring jar
-        run: ./gradlew :bootJar
-      - uses: actions/upload-artifact@v3
-        name: Upload release jar
-        with:
-          name: release-jar
-          path: build/libs/PersonalMetadata.jar
-    needs: terraform-apply
-
-  create-release:
-    runs-on: ubuntu-latest
-    environment: create-release
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3 # downloads to working directory
-        name: Download release jar
-        with:
-          name: release-jar
-      - uses: "marvinpinto/action-automatic-releases@latest"
-        name: Create GitHub release
-        with:
-          title: Automatic release from GitHub Actions
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          prerelease: false
-          files: PersonalMetadata.jar
-    needs: build-release-jar
