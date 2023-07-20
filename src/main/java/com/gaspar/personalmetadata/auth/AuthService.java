@@ -39,12 +39,20 @@ public class AuthService {
     public AuthFlowResult authFlow() {
         try {
             CredentialsData credentialsData = obtainCredentials();
+            log.info("User '{}' credentials have been obtained. Quick login: '{}'", credentialsData.username(), credentialsData.isQuickLogin());
+
             final LoginData loginData = login(credentialsData);
+            log.info("User '{}' was logged into Cognito user pool", credentialsData.username());
+
             final String userId = getCognitoUserId(loginData);
+            log.info("User '{}' was verified in Cognito identity pool: User ID is '{}'", loginData.username(), userId);
+
             AwsSessionCredentials awsCredentials = exchangeUserIdForAwsCredentials(loginData, userId);
+            log.info("Temporary AWS credentials have been obtained");
 
             if(!credentialsData.isQuickLogin() && authView.askUserAboutQuickLogin()) {
                 quickLoginService.writeQuickLoginData(credentialsData);
+                log.info("Quick login file was created");
             }
 
             return new AuthFlowResult(

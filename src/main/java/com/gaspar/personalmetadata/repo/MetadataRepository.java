@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -68,11 +69,18 @@ public class MetadataRepository {
                 .projectionExpression(mapper.headAttributesProjectionExpression()) //only head attributes
                 .keyConditionExpression(mapper.KeyConditionExpression(userId))
                 .build();
-        return dynamoDbClient.queryPaginator(queryRequest)
-                .stream()
-                .flatMap(queryResponse -> queryResponse.items().stream())
-                .map(mapper::itemToMetadataHead)
-                .collect(Collectors.toList());
+        var queryResult = dynamoDbClient.query(queryRequest);
+        if(queryResult.hasItems()) {
+            log.debug("Metadata DynamoDB query has results, starting mapping");
+            return queryResult.items()
+                    .stream()
+                    .map(mapper::itemToMetadataHead)
+                    .collect(Collectors.toList());
+        } else {
+            log.debug("Metadata DynamoDB query has no results");
+            return Collections.emptyList();
+        }
+
     }
 
 

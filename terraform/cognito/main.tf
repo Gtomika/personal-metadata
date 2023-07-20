@@ -62,19 +62,19 @@ data "aws_iam_policy_document" "cognito_user_policy" {
   statement {
     sid = "ManageOwnItems"
     effect = "Allow"
-    actions = [
-      "dynamodb:DeleteItem",
-      "dynamodb:GetItem",
-      "dynamodb:PutItem",
-      "dynamodb:Query",
-      "dynamodb:UpdateItem"
-    ]
+    actions = ["dynamodb:*Item"]
     resources = [var.metadata_table_arn]
     condition {
       test     = "ForAllValues:StringEquals"
       variable = "dynamodb:LeadingKeys"
       values   = ["&{cognito-identity.amazonaws.com:sub}"]
     }
+  }
+  statement {
+    sid = "QueryMetadataTable"
+    effect = "Allow"
+    actions = ["dynamodb:Query"]
+    resources = [var.metadata_table_arn]
   }
 }
 

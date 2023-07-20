@@ -15,3 +15,4 @@ aws:
 logging:
   level:
     root: INFO
+    software.amazon.awssdk: DEBUG
