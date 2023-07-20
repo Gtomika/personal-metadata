@@ -10,11 +10,16 @@ public class PersonalMetadataApplication {
 	private static ApplicationContext applicationContext;
 
 	public static void main(String[] args) {
+		System.setProperty("java.awt.headless", "false");
 		applicationContext = SpringApplication.run(PersonalMetadataApplication.class, args);
 	}
 
 	public static void shutdown(int exitCode) {
-		SpringApplication.exit(applicationContext, () -> exitCode);
+		if(applicationContext != null) {
+			SpringApplication.exit(applicationContext, () -> exitCode);
+		} else {
+			System.exit(exitCode);
+		}
 	}
 
 }

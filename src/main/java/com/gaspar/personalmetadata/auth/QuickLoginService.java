@@ -26,7 +26,7 @@ public class QuickLoginService {
             @Value("${auth.quick-login.file-path}") String quickLoginFilePath,
             ObjectMapper objectMapper
     ) {
-        this.quickLoginFilePath = Paths.get(quickLoginFilePath);
+        this.quickLoginFilePath = Paths.get(System.getProperty("user.home"), quickLoginFilePath);
         this.objectMapper = objectMapper;
     }
 
@@ -53,7 +53,9 @@ public class QuickLoginService {
 
     public void writeQuickLoginData(CredentialsData quickCredentialsData) {
         try {
-            objectMapper.writeValue(quickLoginFilePath.toFile(), quickCredentialsData);
+            Files.deleteIfExists(quickLoginFilePath);
+            Files.createFile(quickLoginFilePath);
+            objectMapper.writeValue(quickLoginFilePath.toFile(), quickCredentialsData.asQuickLoginData());
         } catch (Exception e) {
             log.error("Failed to write the quick login data to '{}'", quickLoginFilePath, e);
         }

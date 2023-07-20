@@ -10,6 +10,13 @@ resource "aws_dynamodb_table" "metadata_table" {
   hash_key = "UserId"
   range_key = "FileId"
 
+  local_secondary_index {
+    name            = "CreatedAtIndex"
+    range_key       = "CreatedAt"
+    projection_type = "INCLUDE"
+    non_key_attributes = ["LastKnownPath"]
+  }
+
   attribute {
     name = "UserId" # Cognito user ID must be the partition key, to make per-user permissions work
     type = "S"

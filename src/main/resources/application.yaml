@@ -1,6 +1,6 @@
 auth:
   quick-login:
-    file-path: ~/personal-metadata/credentials.json
+    file-path: personal-metadata-credentials.json
 
 aws:
   region: eu-central-1
@@ -9,3 +9,9 @@ aws:
     user-pool-id: eu-central-1_S5NuJmFiM
     user-pool-client-id: 18aqnadaa85qoj62ulkiqagfdu
     identity-pool-id: eu-central-1:9401cab2-e1d1-4272-a04e-d4892b5a0201
+  dynamodb:
+    metadata-table-name: personal-metadata-eu-central-1-table
+
+logging:
+  level:
+    root: INFO

@@ -39,6 +39,9 @@ dependencies {
 	// JSON serialization
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7.1'
 
+	//IntelliJ forms designer
+	implementation 'com.intellij:forms_rt:7.0.3'
+
 	//Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'

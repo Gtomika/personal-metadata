@@ -18,4 +18,8 @@ public record CredentialsData(
         );
     }
 
+    public CredentialsData asQuickLoginData() {
+        return new CredentialsData(username, password, true);
+    }
+
 }

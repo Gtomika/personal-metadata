@@ -37,8 +37,8 @@ public class AuthService {
     private final CognitoConfig cognitoConfig;
 
     public AuthFlowResult authFlow() {
-        CredentialsData credentialsData = obtainCredentials();
         try {
+            CredentialsData credentialsData = obtainCredentials();
             final LoginData loginData = login(credentialsData);
             final String userId = getCognitoUserId(loginData);
             AwsSessionCredentials awsCredentials = exchangeUserIdForAwsCredentials(loginData, userId);
@@ -54,14 +54,14 @@ public class AuthService {
             );
         } catch (LoginFailedException e) {
             log.error("Fatal error in login process. Cannot open application.", e);
-            authView.showLoginFailed();
+            authView.showLoginFailed(e.getMessage());
             PersonalMetadataApplication.shutdown(EXIT_CODE_AUTH_FAILED);
             return null;
         }
 
     }
 
-    private CredentialsData obtainCredentials() {
+    private CredentialsData obtainCredentials() throws LoginFailedException {
         var quickLoginData = quickLoginService.readQuickLoginData();
         if(quickLoginData.isPresent()) {
             log.info("Credentials have been obtained from quick login");
@@ -93,7 +93,7 @@ public class AuthService {
         }
     }
 
-    private LoginData changePassword(String username, String session) {
+    private LoginData changePassword(String username, String session) throws LoginFailedException {
         String newPassword = authView.promptUserPasswordChange();
         var challengeRequest = RespondToAuthChallengeRequest.builder()
                 .clientId(cognitoConfig.getUserPoolClientId())
