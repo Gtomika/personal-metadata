@@ -26,6 +26,11 @@ resource "aws_dynamodb_table" "metadata_table" {
     name = "FileId"
     type = "S"
   }
+
+  attribute {
+    name = "CreatedAt"
+    type = "N"
+  }
 }
 
 # attach new client and identity pool to personal user pool, with correct permissions
