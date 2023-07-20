@@ -70,12 +70,6 @@ data "aws_iam_policy_document" "cognito_user_policy" {
       values   = ["&{cognito-identity.amazonaws.com:sub}"]
     }
   }
-  statement {
-    sid = "QueryMetadataTable"
-    effect = "Allow"
-    actions = ["dynamodb:Query"]
-    resources = [var.metadata_table_arn]
-  }
 }
 
 resource "aws_iam_role" "authenticated_user_role" {

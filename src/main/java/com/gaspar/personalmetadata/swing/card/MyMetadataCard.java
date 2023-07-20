@@ -39,49 +39,5 @@ public class MyMetadataCard extends JPanel {
         add(contentPane);
         this.metadataRepository = metadataRepository;
         this.loggedInUserConfig = loggedInUserConfig;
-        asyncLoadMetadataIntoTable();
-    }
-
-    /**
-     * Starts loading the table contents (the metadata from dynamodb)
-     * into this table. Happens on a different thread.
-     */
-    public void asyncLoadMetadataIntoTable() {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.submit(() -> {
-            log.info("Starting to load user's metadata into the table...");
-            List<MetadataHead> metadataHeadList = metadataRepository.queryMetadata(loggedInUserConfig.getUserId());
-            Object[][] dataArray = new Object[metadataHeadList.size()][];
-            for(int i = 0; i < metadataHeadList.size(); i++) {
-                dataArray[i] = metadataHeadToTableRow(metadataHeadList.get(i));
-            }
-            //update on main thread when finished
-            log.info("Finished loading user's metadata, found {} elements", dataArray.length);
-            SwingUtilities.invokeLater(() -> displayDataInTable(dataArray));
-        });
-        executor.shutdown();
-    }
-
-    private String[] metadataHeadToTableRow(MetadataHead head) {
-        return new String[] {
-                head.fileId(),
-                FileUtils.extractPathToFile(head.lastKnownPath()),
-                FileUtils.extractFileName(head.lastKnownPath()),
-                DateUtils.toFormattedDate(head.createdAt())
-        };
-    }
-
-    private void displayDataInTable(Object[][] dataArray) {
-        DefaultTableModel tableModel = new DefaultTableModel(dataArray, COLUMN_NAMES);
-
-        JTable metadataTable = new JTable(tableModel);
-        metadataTable.setFillsViewportHeight(true);
-
-        metadataScrollPane.remove(progressBar);
-        metadataScrollPane.add(metadataTable);
-        metadataScrollPane.invalidate();
-        metadataScrollPane.repaint();
-
-        log.info("Displayed {} elements of user's metadata in scrollable table", dataArray.length);
     }
 }
