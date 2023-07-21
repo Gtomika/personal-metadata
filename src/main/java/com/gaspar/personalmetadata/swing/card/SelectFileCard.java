@@ -1,6 +1,7 @@
 package com.gaspar.personalmetadata.swing.card;
 
-import com.gaspar.personalmetadata.swing.frame.MainFrame;
+import com.gaspar.personalmetadata.swing.MainFrameView;
+import com.gaspar.personalmetadata.swing.ModifyMetadataCardView;
 import com.gaspar.personalmetadata.utils.FileDrop;
 import com.gaspar.personalmetadata.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Optional;
 
 @Lazy
 @Slf4j
@@ -22,9 +24,10 @@ public class SelectFileCard extends JPanel {
 
     private static final int PREVIEW_IMAGE_SIZE = 600;
 
-    private MainFrame mainFrame;
-    private JPanel contentPane;
+    private final MainFrameView mainFrameView;
+    private final ModifyMetadataCardView modifyMetadataCardView;
 
+    private JPanel contentPane;
     private JPanel previewPanel;
     private JLabel previewLabel;
     private JTextField filePathTextField;
@@ -34,16 +37,18 @@ public class SelectFileCard extends JPanel {
     private JButton deselectButton;
     private JTextField fileIdTextField;
 
-    private JLabel imageLabel;
+    private Path selectedFile;
+    private JLabel previewImageLabel;
+    private Image resizedImage;
 
-    public SelectFileCard() {
+    public SelectFileCard(MainFrameView mainFrameView, ModifyMetadataCardView modifyMetadataCardView) {
+        this.mainFrameView = mainFrameView;
+        this.modifyMetadataCardView = modifyMetadataCardView;
+
         add(contentPane);
         new FileDrop(contentPane, this::handleFilesDropped);
         deselectButton.addActionListener(this::deselectDroppedFile);
-    }
-
-    public void setMainFrame(MainFrame mainFrame) {
-        this.mainFrame = mainFrame;
+        findMetadataButton.addActionListener(this::handleFindMetadata);
     }
 
     private void handleFilesDropped(File[] files) {
@@ -53,15 +58,22 @@ public class SelectFileCard extends JPanel {
         }
         if(files.length > 1) {
             JOptionPane.showMessageDialog(
-                    mainFrame,
+                    mainFrameView.getDialogParent(),
                     "Multiple files dropped, only the first one will be used",
                     "Multiple files",
                     JOptionPane.WARNING_MESSAGE
             );
         }
-        Path selectedFile = files[0].toPath();
+        selectedFile = files[0].toPath();
         log.info("The file '{}' was selected for displaying", selectedFile);
         displayDroppedFile(selectedFile);
+    }
+
+    private void handleFindMetadata(ActionEvent event) {
+        //button is only enabled when data is selected
+        log.info("Switching to modify metadata, with file '{}'", selectedFile);
+        modifyMetadataCardView.prepareModifyMetadataCard(selectedFile, fileIdTextField.getText(), Optional.ofNullable(resizedImage));
+        mainFrameView.showModifyMetadataCard();
     }
 
     private void displayDroppedFile(Path file) {
@@ -79,7 +91,7 @@ public class SelectFileCard extends JPanel {
         deselectButton.setEnabled(true);
         findMetadataButton.setEnabled(true);
 
-        mainFrame.pack();
+        mainFrameView.packMainFrame();
     }
 
     private void previewFileIfPossible(Path file, String contentType) {
@@ -90,9 +102,9 @@ public class SelectFileCard extends JPanel {
 
             try {
                 BufferedImage bufferedImage = ImageIO.read(file.toFile());
-                Image resizedImage = FileUtils.resizeImage(bufferedImage, PREVIEW_IMAGE_SIZE);
-                imageLabel = new JLabel(new ImageIcon(resizedImage));
-                previewPanel.add(imageLabel, BorderLayout.CENTER);
+                resizedImage = FileUtils.resizeImage(bufferedImage, PREVIEW_IMAGE_SIZE);
+                previewImageLabel = new JLabel(new ImageIcon(resizedImage));
+                previewPanel.add(previewImageLabel, BorderLayout.CENTER);
             } catch (Exception e) {
                 log.error("Failed to preview image '{}'", file, e);
                 previewLabel.setVisible(true);
@@ -111,10 +123,10 @@ public class SelectFileCard extends JPanel {
         contentTypeTextField.setText("");
         fileIdTextField.setText("");
 
-        if(imageLabel != null) {
+        if(previewImageLabel != null) {
             log.info("Image cleared from preview");
-            previewPanel.remove(imageLabel);
-            imageLabel = null;
+            previewPanel.remove(previewImageLabel);
+            previewImageLabel = null;
         }
         previewLabel.setVisible(true);
         previewLabel.repaint();
@@ -122,7 +134,10 @@ public class SelectFileCard extends JPanel {
         deselectButton.setEnabled(false);
         findMetadataButton.setEnabled(false);
 
-        mainFrame.pack();
+        selectedFile = null;
+        resizedImage = null;
+
+        mainFrameView.packMainFrame();
         log.info("File deselected");
     }
 }

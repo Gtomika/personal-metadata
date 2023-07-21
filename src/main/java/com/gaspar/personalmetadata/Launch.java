@@ -5,6 +5,7 @@ import com.gaspar.personalmetadata.auth.data.AuthFlowResult;
 import com.gaspar.personalmetadata.config.DynamodbConfig;
 import com.gaspar.personalmetadata.config.GeneralAwsConfig;
 import com.gaspar.personalmetadata.config.LoggedInUserConfig;
+import com.gaspar.personalmetadata.swing.MainFrameView;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;

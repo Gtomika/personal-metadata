@@ -2,8 +2,9 @@ package com.gaspar.personalmetadata.swing.frame;
 
 import com.gaspar.personalmetadata.PersonalMetadataApplication;
 import com.gaspar.personalmetadata.config.LoggedInUserConfig;
-import com.gaspar.personalmetadata.swing.card.ModifyMetadataCard;
-import com.gaspar.personalmetadata.swing.card.SelectFileCard;
+import com.gaspar.personalmetadata.swing.LoadingPanelView;
+import com.gaspar.personalmetadata.swing.ModifyMetadataCardView;
+import com.gaspar.personalmetadata.swing.SelectFileCardView;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.nio.file.Path;
+import java.util.Optional;
 
 @Slf4j
 @Lazy
@@ -28,22 +31,20 @@ public class MainFrame extends JFrame {
 
     public MainFrame(
             LoggedInUserConfig loggedInUserConfig,
-            SelectFileCard selectFileCard,
-            ModifyMetadataCard modifyMetadataCard,
-            LoadingPanel loadingPanel
+            SelectFileCardView selectFileCardView,
+            ModifyMetadataCardView modifyMetadataCardView,
+            LoadingPanelView loadingPanelView
     ) {
         setContentPane(contentPane);
         setTitle("Personal Metadata");
 
-        selectFileCard.setMainFrame(this);
-
         usernameField.setText(loggedInUserConfig.getUsername());
-        cardPanel.add(selectFileCard, MainFrameCardType.SELECT_FILE.name());
-        cardPanel.add(modifyMetadataCard, MainFrameCardType.MODIFY_METADATA.name());
+        selectFileCardView.attachSelectFileCard(cardPanel, MainFrameCardType.SELECT_FILE.name());
+        modifyMetadataCardView.attachModifyMetadataCard(cardPanel, MainFrameCardType.MODIFY_METADATA.name());
         mainFrameCardLayout = (CardLayout) cardPanel.getLayout();
         showSelectFileCard();
 
-        loadingPanelHolder.add(loadingPanel, BorderLayout.CENTER);
+        loadingPanelView.attachLoadingPanel(loadingPanelHolder, BorderLayout.CENTER);
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -58,7 +59,7 @@ public class MainFrame extends JFrame {
         pack();
     }
 
-    private void showSelectFileCard() {
+    public void showSelectFileCard() {
         if(currentMainFrameCardType == MainFrameCardType.SELECT_FILE) {
             log.info("Already showing 'my metadata' card");
             return;
@@ -68,7 +69,7 @@ public class MainFrame extends JFrame {
         log.info("Showing 'my metadata' card");
     }
 
-    private void showModifyMetadataCard() {
+    public void showModifyMetadataCard() {
         if(currentMainFrameCardType == MainFrameCardType.MODIFY_METADATA) {
             log.info("Already showing 'modify metadata' card");
             return;
