@@ -1,10 +1,12 @@
 package com.gaspar.personalmetadata.utils;
 
-import org.springframework.stereotype.Component;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DateUtils {
 
     public static String toFormattedDate(String timestamp) {

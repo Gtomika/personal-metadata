@@ -42,6 +42,9 @@ dependencies {
 	//IntelliJ forms designer
 	implementation 'com.intellij:forms_rt:7.0.3'
 
+	//Guava for hashing
+	implementation 'com.google.guava:guava:31.0.1-jre'
+
 	//Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'

@@ -11,8 +11,9 @@ aws:
     identity-pool-id: eu-central-1:9401cab2-e1d1-4272-a04e-d4892b5a0201
   dynamodb:
     metadata-table-name: personal-metadata-eu-central-1-table
+    created-at-index-name: CreatedAtIndex
 
 logging:
   level:
     root: INFO
-    software.amazon.awssdk: DEBUG
+    software.amazon.awssdk: INFO

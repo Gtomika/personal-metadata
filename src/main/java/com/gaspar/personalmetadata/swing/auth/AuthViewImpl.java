@@ -14,6 +14,7 @@ public class AuthViewImpl implements AuthView {
     public CredentialsData promptUserLogin() throws LoginFailedException {
         LoginDialog loginDialog = new LoginDialog();
         loginDialog.setVisible(true);
+        loginDialog.toFront();
         //user uses the UI and closes it
         if(loginDialog.isCancelled()) {
             throw new LoginFailedException("Login dialog was cancelled");
@@ -29,6 +30,7 @@ public class AuthViewImpl implements AuthView {
     public String promptUserPasswordChange() throws LoginFailedException {
         PasswordChangeDialog passwordChangeDialog = new PasswordChangeDialog();
         passwordChangeDialog.setVisible(true);
+        passwordChangeDialog.toFront();
         //user uses the UI and closes it
         if(passwordChangeDialog.isCancelled()) {
             throw new LoginFailedException("Password change dialog was cancelled");

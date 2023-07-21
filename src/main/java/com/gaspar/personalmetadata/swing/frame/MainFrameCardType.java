@@ -1,6 +1,6 @@
 package com.gaspar.personalmetadata.swing.frame;
 
 public enum MainFrameCardType {
-    MY_METADATA,
+    SELECT_FILE,
     MODIFY_METADATA
 }

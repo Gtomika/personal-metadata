@@ -1,4 +1,4 @@
-package com.gaspar.personalmetadata.frame;
+package com.gaspar.personalmetadata;
 
 public interface MainFrameView {
 

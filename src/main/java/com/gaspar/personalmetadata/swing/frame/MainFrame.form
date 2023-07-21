@@ -40,37 +40,20 @@
       </grid>
       <grid id="4a809" binding="cardPanel" layout-manager="CardLayout" hgap="0" vgap="0">
         <constraints>
-          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
         <border type="none"/>
         <children/>
       </grid>
-      <toolbar id="9a594">
+      <grid id="3bf10" binding="loadingPanelHolder" layout-manager="BorderLayout" hgap="0" vgap="0">
         <constraints>
-          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="-1" height="20"/>
-          </grid>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
-        <border type="empty">
-          <size top="0" left="10" bottom="10" right="10"/>
-        </border>
-        <children>
-          <component id="396e3" class="javax.swing.JButton" binding="myMetadataButton">
-            <constraints/>
-            <properties>
-              <text value="My metadata"/>
-            </properties>
-          </component>
-          <component id="2c313" class="javax.swing.JButton" binding="modifyMetadataButton">
-            <constraints/>
-            <properties>
-              <text value="Add metadata"/>
-            </properties>
-          </component>
-        </children>
-      </toolbar>
+        <border type="none"/>
+        <children/>
+      </grid>
     </children>
   </grid>
 </form>
