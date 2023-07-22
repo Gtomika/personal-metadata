@@ -45,5 +45,7 @@ jobs:
           title: "Automatic release | ${{ github.ref_name }}"
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
-          files: "${{ env.JAR_NAME }}"
+          files: |
+            "${{ env.JAR_NAME }}"
+            launch.bat
     needs: build-release-jar

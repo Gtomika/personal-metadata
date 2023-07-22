@@ -5,10 +5,10 @@ plugins {
 }
 
 group = 'com.gaspar'
-version = '0.1'
+version = '1.0'
 
 java {
-	sourceCompatibility = '17'
+	sourceCompatibility = JavaVersion.VERSION_17
 }
 
 bootJar {
