@@ -16,4 +16,9 @@ public class SelectFileCardViewImpl implements SelectFileCardView {
     public void attachSelectFileCard(JPanel panel, Object attribute) {
         panel.add(selectFileCard, attribute);
     }
+
+    @Override
+    public void resetSelectFileCard() {
+        selectFileCard.deselectDroppedFile(null);
+    }
 }

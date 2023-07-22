@@ -6,4 +6,6 @@ public interface SelectFileCardView {
 
     void attachSelectFileCard(JPanel panel, Object attribute);
 
+    void resetSelectFileCard();
+
 }

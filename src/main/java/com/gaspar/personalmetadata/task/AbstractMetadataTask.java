@@ -1,5 +1,6 @@
 package com.gaspar.personalmetadata.task;
 
+import com.gaspar.personalmetadata.repo.MetadataRepository;
 import lombok.RequiredArgsConstructor;
 
 import javax.swing.*;
@@ -10,6 +11,10 @@ public abstract class AbstractMetadataTask<T, V> extends SwingWorker<T, V> {
 
     protected final Consumer<T> onSuccess;
     protected final Consumer<Exception> onFail;
+
+    protected final String userId;
+    protected final String fileId;
+    protected final MetadataRepository metadataRepository;
 
     @Override
     protected abstract T doInBackground() throws Exception;

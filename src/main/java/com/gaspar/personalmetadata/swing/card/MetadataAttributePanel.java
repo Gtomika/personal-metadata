@@ -15,7 +15,7 @@ public class MetadataAttributePanel extends JPanel {
     private JButton deleteButton;
 
     private MetadataAttributePanel(String name, String value) {
-        contentPane.setPreferredSize(new Dimension(-1, 40));
+        contentPane.setPreferredSize(new Dimension(480, 40));
         add(contentPane);
         nameField.setText(name);
         valueField.setText(value);
@@ -30,8 +30,16 @@ public class MetadataAttributePanel extends JPanel {
         parent.repaint();
     }
 
-    private boolean validState() {
+    public boolean validState() {
         return !nameField.getText().isBlank(); //value field can be empty
+    }
+
+    public String attributeName() {
+        return nameField.getText();
+    }
+
+    public String attributeValue() {
+        return valueField.getText();
     }
 
     public static MetadataAttributePanel of(String name, String value) {

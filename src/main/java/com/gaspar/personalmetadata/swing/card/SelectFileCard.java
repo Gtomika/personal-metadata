@@ -4,7 +4,9 @@ import com.gaspar.personalmetadata.swing.MainFrameView;
 import com.gaspar.personalmetadata.swing.ModifyMetadataCardView;
 import com.gaspar.personalmetadata.utils.FileDrop;
 import com.gaspar.personalmetadata.utils.FileUtils;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +27,9 @@ public class SelectFileCard extends JPanel {
     private static final int PREVIEW_IMAGE_SIZE = 600;
 
     private final MainFrameView mainFrameView;
-    private final ModifyMetadataCardView modifyMetadataCardView;
+
+    @Setter(onMethod_ = {@Autowired, @Lazy})
+    private ModifyMetadataCardView modifyMetadataCardView;
 
     private JPanel contentPane;
     private JPanel previewPanel;
@@ -41,9 +45,8 @@ public class SelectFileCard extends JPanel {
     private JLabel previewImageLabel;
     private Image resizedImage;
 
-    public SelectFileCard(MainFrameView mainFrameView, ModifyMetadataCardView modifyMetadataCardView) {
+    public SelectFileCard(MainFrameView mainFrameView) {
         this.mainFrameView = mainFrameView;
-        this.modifyMetadataCardView = modifyMetadataCardView;
 
         add(contentPane);
         new FileDrop(contentPane, this::handleFilesDropped);
@@ -91,7 +94,7 @@ public class SelectFileCard extends JPanel {
         deselectButton.setEnabled(true);
         findMetadataButton.setEnabled(true);
 
-        mainFrameView.packMainFrame();
+        mainFrameView.mainFrameContentsChanged();
     }
 
     private void previewFileIfPossible(Path file, String contentType) {
@@ -117,7 +120,7 @@ public class SelectFileCard extends JPanel {
         }
     }
 
-    private void deselectDroppedFile(ActionEvent e) {
+    public void deselectDroppedFile(ActionEvent e) {
         filePathTextField.setText("");
         fileNameTextField.setText("");
         contentTypeTextField.setText("");
@@ -137,7 +140,7 @@ public class SelectFileCard extends JPanel {
         selectedFile = null;
         resizedImage = null;
 
-        mainFrameView.packMainFrame();
+        mainFrameView.mainFrameContentsChanged();
         log.info("File deselected");
     }
 }

@@ -1,9 +1,6 @@
 package com.gaspar.personalmetadata.swing;
 
-import javax.swing.*;
-import java.awt.*;
-import java.nio.file.Path;
-import java.util.Optional;
+import javax.swing.JFrame;
 
 public interface MainFrameView {
 
@@ -13,8 +10,7 @@ public interface MainFrameView {
 
     void showModifyMetadataCard();
 
-    void packMainFrame();
-
     JFrame getDialogParent();
 
+    void mainFrameContentsChanged();
 }

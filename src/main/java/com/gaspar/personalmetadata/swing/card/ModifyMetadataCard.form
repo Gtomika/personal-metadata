@@ -3,7 +3,7 @@
   <grid id="27dc6" binding="contentPane" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="500" height="400"/>
+      <xy x="20" y="20" width="525" height="400"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -52,13 +52,16 @@
                 <constraints/>
                 <properties>
                   <text value="Cancel"/>
+                  <toolTipText value="Go back to file selection"/>
                 </properties>
               </component>
               <component id="79ca" class="javax.swing.JButton" binding="deleteButton">
                 <constraints/>
                 <properties>
+                  <enabled value="false"/>
                   <foreground color="-4521216"/>
                   <text value="Delete"/>
+                  <toolTipText value="Delete all metadata of this file"/>
                 </properties>
               </component>
               <vspacer id="1bcc2">
@@ -68,21 +71,28 @@
                 <constraints/>
                 <properties>
                   <text value="New metadata"/>
+                  <toolTipText value="Add a new attribute"/>
                 </properties>
               </component>
               <component id="9cc37" class="javax.swing.JButton" binding="saveButton">
                 <constraints/>
                 <properties>
                   <text value="Save"/>
+                  <toolTipText value="Save metadata and go back to file selection"/>
                 </properties>
               </component>
             </children>
           </grid>
-          <grid id="49591" binding="scrollPaneHolder" layout-manager="BorderLayout" hgap="0" vgap="0">
+          <grid id="49591" binding="scrollPaneHolder" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
             <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                <preferred-size width="500" height="500"/>
+                <maximum-size width="500" height="500"/>
+              </grid>
             </constraints>
-            <properties/>
+            <properties>
+              <background color="-2759958"/>
+            </properties>
             <border type="none"/>
             <children/>
           </grid>
@@ -95,6 +105,7 @@
         <properties>
           <font style="2"/>
           <text value="[path]"/>
+          <toolTipText value="Where this file is on your machine"/>
         </properties>
       </component>
       <grid id="214cd" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
@@ -112,7 +123,7 @@
               <text value="File metadata in database:"/>
             </properties>
           </component>
-          <component id="1bfc" class="javax.swing.JTextField" binding="fileInDatabaseStatusField">
+          <component id="1bfc" class="javax.swing.JTextField" binding="metadataStateField">
             <constraints/>
             <properties>
               <editable value="false"/>

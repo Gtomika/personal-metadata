@@ -8,7 +8,6 @@ import java.util.function.Consumer;
 public class SaveMetadataTask extends AbstractMetadataTask<Void, Object> {
 
     private final Metadata metadata;
-    private final MetadataRepository metadataRepository;
 
     public SaveMetadataTask(
             Consumer<Void> onSuccess,
@@ -16,13 +15,12 @@ public class SaveMetadataTask extends AbstractMetadataTask<Void, Object> {
             Metadata metadata,
             MetadataRepository metadataRepository
     ) {
-        super(onSuccess, onFail);
+        super(onSuccess, onFail, metadata.head().userId(), metadata.head().fileId(), metadataRepository);
         this.metadata = metadata;
-        this.metadataRepository = metadataRepository;
     }
 
     @Override
-    protected Void doInBackground() throws Exception {
+    protected Void doInBackground() {
         metadataRepository.putMetadata(metadata);
         return null;
     }

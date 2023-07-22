@@ -14,7 +14,7 @@ aws:
     created-at-index-name: CreatedAtIndex
 
 metadata:
-  recommended: Title|Time|Location
+  recommended: Title|Time|Location|People|Photographer
 
 logging:
   level:

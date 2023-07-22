@@ -37,12 +37,14 @@ public class MainFrameViewImpl implements MainFrameView {
     }
 
     @Override
-    public void packMainFrame() {
-        mainFrame.pack();
+    public JFrame getDialogParent() {
+        return mainFrame;
     }
 
     @Override
-    public JFrame getDialogParent() {
-        return mainFrame;
+    public void mainFrameContentsChanged() {
+        mainFrame.revalidate();
+        mainFrame.repaint();
+        mainFrame.pack();
     }
 }

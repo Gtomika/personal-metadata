@@ -1,15 +1,13 @@
 package com.gaspar.personalmetadata.task;
 
-import com.gaspar.personalmetadata.repo.Metadata;
 import com.gaspar.personalmetadata.repo.MetadataRepository;
 
-import java.util.Optional;
 import java.util.function.Consumer;
 
-public class GetMetadataTask extends AbstractMetadataTask<Optional<Metadata>, Object> {
+public class DeleteMetadataTask extends AbstractMetadataTask<Void, Object> {
 
-    public GetMetadataTask(
-            Consumer<Optional<Metadata>> onSuccess,
+    public DeleteMetadataTask(
+            Consumer<Void> onSuccess,
             Consumer<Exception> onFail,
             String userId,
             String fileId,
@@ -19,8 +17,8 @@ public class GetMetadataTask extends AbstractMetadataTask<Optional<Metadata>, Ob
     }
 
     @Override
-    protected Optional<Metadata> doInBackground() {
-        return metadataRepository.getMetadata(userId, fileId);
+    protected Void doInBackground() throws Exception {
+        metadataRepository.deleteMetadata(userId, fileId);
+        return null;
     }
-
 }
