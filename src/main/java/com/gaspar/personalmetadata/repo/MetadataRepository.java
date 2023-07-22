@@ -10,6 +10,8 @@ import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.GetItemResponse;
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
 
+import java.util.Optional;
+
 @Slf4j
 @Lazy
 @Repository
@@ -19,7 +21,7 @@ public class MetadataRepository {
     private final MetadataItemMapper mapper;
     private final DynamodbConfig dynamodbConfig;
 
-    public Metadata getMetadata(String userId, String fileId) {
+    public Optional<Metadata> getMetadata(String userId, String fileId) {
         GetItemRequest getRequest = GetItemRequest.builder()
                 .tableName(dynamodbConfig.getMetadataTableName())
                 .key(mapper.toKey(userId, fileId))
@@ -28,10 +30,9 @@ public class MetadataRepository {
 
         //it is assumed that the app only allows this for existing items
         if(getResponse.hasItem()) {
-            return mapper.itemToMetadata(getResponse.item());
+            return Optional.of(mapper.itemToMetadata(getResponse.item()));
         } else {
-            log.error("Get item operation found no item!");
-            return null;
+            return Optional.empty();
         }
     }
 

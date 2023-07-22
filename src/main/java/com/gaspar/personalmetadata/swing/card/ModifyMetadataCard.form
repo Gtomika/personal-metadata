@@ -41,23 +41,6 @@
         <properties/>
         <border type="none"/>
         <children>
-          <scrollpane id="e579c">
-            <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties/>
-            <border type="empty">
-              <size top="5" left="5" bottom="5" right="5"/>
-            </border>
-            <children>
-              <grid id="6c722" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
-                <constraints/>
-                <properties/>
-                <border type="none"/>
-                <children/>
-              </grid>
-            </children>
-          </scrollpane>
           <grid id="b466" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -95,6 +78,14 @@
               </component>
             </children>
           </grid>
+          <grid id="49591" binding="scrollPaneHolder" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children/>
+          </grid>
         </children>
       </grid>
       <component id="f27c4" class="javax.swing.JLabel" binding="filePathField">
@@ -106,14 +97,29 @@
           <text value="[path]"/>
         </properties>
       </component>
-      <component id="c2409" class="javax.swing.JLabel">
+      <grid id="214cd" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
         <constraints>
-          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="-1" height="30"/>
+          </grid>
         </constraints>
-        <properties>
-          <text value="Edit existing data, or add new one to this file"/>
-        </properties>
-      </component>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="6bfbe" class="javax.swing.JLabel">
+            <constraints/>
+            <properties>
+              <text value="File metadata in database:"/>
+            </properties>
+          </component>
+          <component id="1bfc" class="javax.swing.JTextField" binding="fileInDatabaseStatusField">
+            <constraints/>
+            <properties>
+              <editable value="false"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
     </children>
   </grid>
 </form>

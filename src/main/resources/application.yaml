@@ -13,6 +13,9 @@ aws:
     metadata-table-name: personal-metadata-eu-central-1-table
     created-at-index-name: CreatedAtIndex
 
+metadata:
+  recommended: Title|Time|Location
+
 logging:
   level:
     root: INFO

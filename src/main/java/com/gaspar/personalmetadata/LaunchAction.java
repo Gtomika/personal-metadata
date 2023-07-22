@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class Launch {
+public class LaunchAction {
 
     private final AuthService authService;
     private final GeneralAwsConfig generalAwsConfig;
